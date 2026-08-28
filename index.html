@@ -33,8 +33,55 @@
             headers: { 'Content-Type': 'application/json' }
           }));
         }
-        if (urlStr.indexOf('/api/filesystem/watch') !== -1 || urlStr.indexOf('/api/filesystem/unwatch') !== -1) {
+        if (urlStr.indexOf('/api/codex/plugin/list') !== -1) {
+          return Promise.resolve(new Response(JSON.stringify({ marketplaces: [], marketplaceLoadErrors: [], featuredPluginIds: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
+        if (urlStr.indexOf('/api/codex/plugin/read') !== -1) {
+          return Promise.resolve(new Response(JSON.stringify({ plugin: null }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
+        if (urlStr.indexOf('/api/codex/hooks/list') !== -1) {
+          return Promise.resolve(new Response(JSON.stringify({ data: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
+        if (urlStr.indexOf('/api/codex/external-agent-config') !== -1) {
+          return Promise.resolve(new Response(JSON.stringify({ items: [], histories: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
+        if (urlStr.indexOf('/api/codex/thread/goal/get') !== -1) {
+          return Promise.resolve(new Response(JSON.stringify({ goal: null }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
+        if (
+          urlStr.indexOf('/api/filesystem/watch') !== -1 ||
+          urlStr.indexOf('/api/filesystem/unwatch') !== -1 ||
+          urlStr.indexOf('/api/sleep/prevent') !== -1 ||
+          urlStr.indexOf('/api/sleep/allow') !== -1 ||
+          urlStr.indexOf('/api/codex/thread/delete') !== -1 ||
+          urlStr.indexOf('/api/codex/thread/rename') !== -1 ||
+          urlStr.indexOf('/api/codex/thread/goal/') !== -1 ||
+          urlStr.indexOf('/api/codex/memory/reset') !== -1 ||
+          urlStr.indexOf('/api/codex/plugin/install') !== -1 ||
+          urlStr.indexOf('/api/codex/plugin/uninstall') !== -1
+        ) {
           return Promise.resolve(new Response(JSON.stringify({ status: 'ok' }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
+        if (urlStr.indexOf('/api/git/has-worktree-changes') !== -1) {
+          return Promise.resolve(new Response(JSON.stringify({ hasChanges: false }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
           }));

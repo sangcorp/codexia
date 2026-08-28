@@ -95,6 +95,7 @@ export const EventItem = ({ event, context }: EventItemProps) => {
         <p className="text-red-600 dark:text-red-400 font-medium">{event.params.error.message}</p>
       );
     case 'warning':
+      if (event.params.message?.includes('Skill descriptions were shortened')) return null;
       return (
         <p className="text-yellow-600 dark:text-yellow-400 font-medium">{event.params.message}</p>
       );
