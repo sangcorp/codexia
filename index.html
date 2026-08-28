@@ -6,6 +6,43 @@
   <link rel="icon" type="image/svg+xml" href="/logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Codexia</title>
+  <script>
+    (function() {
+      // Polyfill Tauri internals for web mode
+      window.__TAURI_INTERNALS__ = window.__TAURI_INTERNALS__ || {};
+      if (!window.__TAURI_INTERNALS__.convertFileSrc) {
+        window.__TAURI_INTERNALS__.convertFileSrc = function(filePath) {
+          if (!filePath) return '';
+          if (filePath.startsWith('http://') || filePath.startsWith('https://') || filePath.startsWith('data:')) return filePath;
+          return '/api/filesystem/read-binary?path=' + encodeURIComponent(filePath);
+        };
+      }
+      if (!window.__TAURI_INTERNALS__.invoke) {
+        window.__TAURI_INTERNALS__.invoke = function(cmd, args) {
+          console.warn('[TauriPolyfill] invoke in web mode:', cmd, args);
+          return Promise.reject(new Error('Tauri IPC not available in web mode'));
+        };
+      }
+      // Intercept fetch for desktop-only or unhandled endpoints in web mode
+      var origFetch = window.fetch;
+      window.fetch = function(url, options) {
+        var urlStr = typeof url === 'string' ? url : (url && url.url) || '';
+        if (urlStr.indexOf('/api/codex/plugin/installed') !== -1) {
+          return Promise.resolve(new Response(JSON.stringify({ marketplaces: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
+        if (urlStr.indexOf('/api/filesystem/watch') !== -1 || urlStr.indexOf('/api/filesystem/unwatch') !== -1) {
+          return Promise.resolve(new Response(JSON.stringify({ status: 'ok' }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          }));
+        }
+        return origFetch.apply(this, arguments);
+      };
+    })();
+  </script>
 </head>
 
 <body>
